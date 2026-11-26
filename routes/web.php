@@ -1,19 +1,35 @@
 <?php
 
-// use Illuminate\Support\Facades\Route;
-
-// Route::inertia('/', 'welcome')->name('home');
-
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::inertia('dashboard', 'dashboard')->name('dashboard');
-// });
-
-// require __DIR__.'/settings.php';
-
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
 
-// Rutas de tu nuevo EliasCms en Laravel
-Route::get('/cms', [ProductController::class, 'index'])->name('cms.index');
-Route::post('/cms/productos', [ProductController::class, 'store'])->name('cms.products.store');
-Route::delete('/cms/productos/{product}', [ProductController::class, 'destroy'])->name('cms.products.destroy');
+Route::inertia('/', 'welcome')->name('home');
+
+// Rutas de Autenticación
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Rutas de EliasCms
+Route::prefix('cms')->name('cms.')->group(function () {
+    Route::get('/', [ProductController::class, 'index'])->name('index');
+
+    // Productos
+    Route::post('/productos', [ProductController::class, 'store'])->name('products.store');
+    Route::put('/productos/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/productos/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Categorías
+    Route::post('/categorias', [CategoryController::class, 'store'])->name('categories.store');
+    Route::put('/categorias/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categorias/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+    // Clientes
+    Route::post('/clientes', [ClientsController::class, 'store'])->name('clients.store');
+    Route::put('/clientes/{client}', [ClientsController::class, 'update'])->name('clients.update');
+    Route::delete('/clientes/{client}', [ClientsController::class, 'destroy'])->name('clients.destroy');
+});
